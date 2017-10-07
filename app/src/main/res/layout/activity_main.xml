@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.wchristiansen.assignmenttracker.activities.MainActivity">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="?android:attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <TextView
+        android:id="@+id/message_no_courses_added"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/padding_x_large"
+        android:text="@string/message_no_courses_added"
+        android:textColor="#999"
+        android:textSize="@dimen/text_large"/>
+
+    <LinearLayout
+        android:id="@+id/menu_button_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:padding="@dimen/fab_menu_container_margin"
+        android:orientation="vertical"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:id="@+id/container_add_assignment"
+            style="@style/FabMenuContainerStyle">
+
+            <TextView
+                android:id="@+id/label_add_assignment"
+                style="@style/FabMiniLabelStyle"
+                android:text="@string/add_assignment" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btn_add_assignment"
+                style="@style/FabMiniStyle"
+                android:src="@drawable/icv_document_white_24dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_add_course"
+            style="@style/FabMenuContainerStyle">
+
+            <TextView
+                android:id="@+id/label_add_course"
+                style="@style/FabMiniLabelStyle"
+                android:text="@string/add_course" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btn_add_course"
+                style="@style/FabMiniStyle"
+                android:src="@drawable/icv_book_white_24dp" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_add_menu"
+            style="@style/FabStyle"
+            android:src="@drawable/icv_add_white_24dp" />
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

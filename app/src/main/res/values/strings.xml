@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Assignment Tracker</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_reset_database">Reset Database</string>
+    <string name="action_backup_database">Backup Database</string>
+    <string name="action_import_database">Import Database</string>
+
+    <string name="add_course">Add Course</string>
+    <string name="add_assignment">Add Assignment</string>
+    <string name="select_due_date">Select a Due Date&#8230;</string>
+    <string name="add_assignment_to_course">Course to add assignment to&#8230;</string>
+    <string name="add_assignment_due_date">Assignment will be due on&#8230;</string>
+
+    <string name="desc_save_sub_assignment">Save Sub-Assignment</string>
+    <string name="desc_add_new_sub_assignment">Add New Sub-Assignment</string>
+
+    <string name="message_no_courses_added">No Courses or Assignments have been added yet.</string>
+    <string name="message_no_database_import_files_found">No Database Import Files Found</string>
+
+    <string name="hint_assignment_name">Assignment Name</string>
+    <string name="hint_course_name">Course Name</string>
+    <string name="hint_course_nickname">Course Nickname (optional)</string>
+    <string name="hint_sub_assignment_name">Sub assignment name</string>
+</resources>

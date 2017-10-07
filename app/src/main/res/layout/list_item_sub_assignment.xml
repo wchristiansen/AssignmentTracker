@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckBox
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/list_item_sub_assignment_left_margin"
+    android:layout_marginEnd="0dp"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/padding_x_small"
+    android:paddingBottom="@dimen/padding_x_small"
+    android:textSize="@dimen/text_small" />

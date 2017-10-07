@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:minWidth="@dimen/fragment_min_width"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_normal">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/input_assignment_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_assignment_name"
+            android:textSize="@dimen/text_normal" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:text="@string/add_assignment_to_course"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_small" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/picker_course"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_x_small"
+        android:textSize="@dimen/text_normal"
+        android:theme="@style/AppTheme" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:text="@string/add_assignment_due_date"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_small" />
+
+    <TextView
+        android:id="@+id/btn_date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_x_small"
+        android:background="?android:attr/selectableItemBackground"
+        android:drawableEnd="@drawable/icv_drop_down_gray_24dp"
+        android:paddingStart="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingBottom="@dimen/padding_normal"
+        android:text="@string/select_due_date"
+        android:textSize="@dimen/text_normal"/>
+
+    <Button
+        android:id="@+id/btn_add_assignment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="@string/add_assignment"
+        android:textSize="@dimen/text_small"
+        android:theme="@style/AppTheme" />
+
+</LinearLayout>

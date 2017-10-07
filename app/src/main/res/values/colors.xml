@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#CD5334</color>
+    <color name="colorPrimaryDark">#af4429</color>
+    <color name="colorAccent">#476C9B</color>
+    <color name="colorBackground">#CCC7B9</color>
+
+    <color name="default_text">#808080</color>
+    <color name="bg_delete_item">#C62828</color>
+</resources>

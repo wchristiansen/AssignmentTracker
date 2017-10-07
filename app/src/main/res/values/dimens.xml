@@ -1,0 +1,21 @@
+<resources>
+    <dimen name="padding_x_small">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_normal">12dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="padding_x_large">20dp</dimen>
+
+    <dimen name="text_x_small">12sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_normal">18sp</dimen>
+    <dimen name="text_large">20sp</dimen>
+    <dimen name="text_x_large">24sp</dimen>
+
+    <dimen name="fab_menu_container_margin">16dp</dimen>
+
+    <dimen name="list_item_assignment_left_margin">16dp</dimen>
+    <dimen name="list_item_assignment_right_margin">8dp</dimen>
+    <dimen name="list_item_sub_assignment_left_margin">36dp</dimen>
+
+    <dimen name="fragment_min_width">372dp</dimen>
+</resources>

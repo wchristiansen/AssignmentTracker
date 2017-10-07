@@ -1,0 +1,53 @@
+<resources>
+
+   <style name="ButtonStyle" parent="Base.Widget.AppCompat.Button">
+       <item name="android:background">@drawable/btn_default_background</item>
+       <item name="android:textColor">@android:color/white</item>
+   </style>
+
+    <style name="AlertDialogTitleStyle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="DialogFragmentButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="FabMenuContainerStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:paddingStart">@dimen/padding_x_small</item>
+        <item name="android:paddingEnd">@dimen/padding_x_small</item>
+        <item name="android:paddingBottom">@dimen/padding_normal</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="FabStyle" parent="Widget.Design.FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="fabSize">normal</item>
+    </style>
+
+    <style name="FabMiniStyle" parent="Widget.Design.FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fabSize">mini</item>
+    </style>
+
+    <style name="FabMiniLabelStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginEnd">@dimen/padding_small</item>
+        <item name="android:background">@drawable/bg_fab_hint_text</item>
+        <item name="android:clickable">true</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/text_x_small</item>
+        <item name="fabSize">mini</item>
+    </style>
+
+</resources>
