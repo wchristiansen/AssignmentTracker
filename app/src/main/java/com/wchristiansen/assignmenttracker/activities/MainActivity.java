@@ -131,12 +131,16 @@ public class MainActivity extends AppCompatActivity implements AddNewItemFragmen
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Rect viewRect = new Rect();
-                rootView.getWindowVisibleDisplayFrame(viewRect);
+                // The window will contain the coordinates of the view area that is still visible
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+
+                // Get screen height and calculate the difference with the usable area from the rect
+                int height = rootView.getContext().getResources().getDisplayMetrics().heightPixels;
 
                 // Determine if the keyboard is showing by inspecting the entire ViewTree and if it
                 // is showing then hide the FAB menu buttons since room is limited
-                if (rootView.getRootView().getHeight() - (viewRect.bottom - viewRect.top) > 200) {
+                if (height - r.bottom != 0) {
                     hideMenuViews();
                 } else {
                     showMenuViews();
@@ -185,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements AddNewItemFragmen
                             importBackup(selection);
                         }
                     });
-            fragment.show(getFragmentManager(), ImportDatabaseFragment.class.getSimpleName());
+            fragment.show(getSupportFragmentManager(), ImportDatabaseFragment.class.getSimpleName());
             return true;
         }
         else if (id == R.id.action_reset_database) {
