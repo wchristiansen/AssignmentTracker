@@ -18,12 +18,11 @@ import com.wchristiansen.assignmenttracker.utils.KeyboardUtil;
  * @author will
  * @version 9/27/17
  */
-class AssignmentViewHolder extends RecyclerView.ViewHolder
+public class AssignmentViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener, View.OnCreateContextMenuListener {
 
-    private static final String ENABLE_LONG_PRESS_MENU = "enable_long_press_menu";
-
     private final InteractionListener listener;
+    private boolean enableSwipeToDismiss;
 
     TextView title;
     EditText editText;
@@ -37,25 +36,25 @@ class AssignmentViewHolder extends RecyclerView.ViewHolder
 
     AssignmentViewHolder(final View itemView,
                          final InteractionListener listener,
-                         final boolean allowLongPressActions) {
+                         final boolean allowLongPressActions,
+                         final boolean allowSwipeToDismiss) {
         super(itemView);
         this.listener = listener;
 
-        itemView.setTag(allowLongPressActions ? ENABLE_LONG_PRESS_MENU : null);
-
-        if(allowLongPressActions) {
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    view.setOnCreateContextMenuListener(AssignmentViewHolder.this);
-                    return false;
-                }
-            });
-        }
+        this.enableSwipeToDismiss = allowSwipeToDismiss;
 
         title = itemView.findViewById(R.id.title);
         if(title != null) {
             title.setOnClickListener(this);
+            if(allowLongPressActions) {
+                title.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        view.setOnCreateContextMenuListener(AssignmentViewHolder.this);
+                        return false;
+                    }
+                });
+            }
         }
 
         editText = itemView.findViewById(R.id.edit_sub_assignment_title);
@@ -82,6 +81,10 @@ class AssignmentViewHolder extends RecyclerView.ViewHolder
         if(saveSubAssignmentButton != null) {
             saveSubAssignmentButton.setOnClickListener(this);
         }
+    }
+
+    public boolean canSwipeToDismiss() {
+        return enableSwipeToDismiss;
     }
 
     void setVisibility(boolean isVisible) {
@@ -129,7 +132,10 @@ class AssignmentViewHolder extends RecyclerView.ViewHolder
     public void onCreateContextMenu(ContextMenu contextMenu,
                                     View view,
                                     ContextMenu.ContextMenuInfo contextMenuInfo) {
-        contextMenu.add(getAdapterPosition(), OptionsMenuItem.EDIT.id, 0, OptionsMenuItem.EDIT.title);
+        // Only allow the edit option for sub-assignments for now until the UI can be figured out
+        if(itemView.findViewById(R.id.btn_add_sub_assignment) == null) {
+            contextMenu.add(getAdapterPosition(), OptionsMenuItem.EDIT.id, 0, OptionsMenuItem.EDIT.title);
+        }
         contextMenu.add(getAdapterPosition(), OptionsMenuItem.DELETE.id, 0, OptionsMenuItem.DELETE.title);
         contextMenu.add(getAdapterPosition(), OptionsMenuItem.MARK_COMPLETE.id, 0, OptionsMenuItem.MARK_COMPLETE.title);
     }

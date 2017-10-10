@@ -2,6 +2,7 @@ package com.wchristiansen.assignmenttracker.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,6 +141,23 @@ public class Assignment implements AdapterItem, Parcelable {
     public String toString() {
         return title;
     }
+
+    @Override
+    public int hashCode() {
+        int result = 31 * (int)id;
+        result += 31 * courseId;
+        result += 31 * ((title == null) ? 0 : title .hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Assignment
+                && id == ((Assignment) o).getId()
+                && courseId == ((Assignment)o).getCourseId()
+                && TextUtils.equals(title, ((Assignment)o).getTitle());
+    }
+
 
     @Override
     public int describeContents() {

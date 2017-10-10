@@ -120,10 +120,25 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentViewHolder
     public void removeAssignment(int position) {
         AdapterItem item = adapterModelList.get(position);
         if(item instanceof Assignment) {
-            boolean result = databaseHelper.removeAssignment((Assignment)item);
+            Assignment assignment = (Assignment)item;
+            boolean result = databaseHelper.removeAssignment(assignment);
             if(result) {
-                adapterModelList.remove(position);
-                notifyItemRemoved(position);
+                List<Assignment> toRemove = new ArrayList<>();
+                toRemove.add(assignment);
+
+                if(assignment.getSubAssignmentList() != null) {
+                    toRemove.addAll(assignment.getSubAssignmentList());
+                }
+
+                adapterModelList.removeAll(toRemove);
+
+                if(assignment.hasSubAssignments() && assignment.getSubAssignmentList().size() > 0) {
+                    // Notify the system of the number of items that were removed
+                    int totalRemoved = toRemove.size();
+                    notifyItemRangeRemoved(position, totalRemoved);
+                } else {
+                    notifyItemRemoved(position);
+                }
             } else {
                 Toast.makeText(context, "Well shit.", Toast.LENGTH_SHORT).show();
             }
@@ -176,8 +191,12 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentViewHolder
                 break;
         }
         View item = LayoutInflater.from(context).inflate(viewId, parent, false);
-        // TODO Add the ability to Edit, Delete and mark complete from context menu for Assignments
-        return new AssignmentViewHolder(item, this, viewId == R.layout.list_item_sub_assignment);
+        return new AssignmentViewHolder(
+                item,
+                this,
+                viewId == R.layout.list_item_assignment || viewId == R.layout.list_item_sub_assignment,
+                viewId == R.layout.list_item_assignment
+        );
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +35,7 @@ import com.wchristiansen.assignmenttracker.fragments.AddNewItemFragment;
 import com.wchristiansen.assignmenttracker.fragments.ImportDatabaseFragment;
 import com.wchristiansen.assignmenttracker.models.Assignment;
 import com.wchristiansen.assignmenttracker.models.Course;
+import com.wchristiansen.assignmenttracker.utils.SwipeToDeleteHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,17 +116,17 @@ public class MainActivity extends AppCompatActivity implements AddNewItemFragmen
             registerForContextMenu(recyclerView);
 
             // TODO Should there be a swipe option for certain view types?
-            /*SwipeToDeleteHelper swipeToDeleteHelper = new SwipeToDeleteHelper(this, 0,
+            SwipeToDeleteHelper swipeToDeleteHelper = new SwipeToDeleteHelper(this, 0,
                     ItemTouchHelper.LEFT, R.color.bg_delete_item, R.drawable.icv_delete_white_24dp,
                     new SwipeToDeleteHelper.Callback() {
                         @Override
                         public void onItemRemoved(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
+                            assignmentAdapter.removeAssignment(viewHolder.getAdapterPosition());
                         }
                     });
 
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeToDeleteHelper);
-            itemTouchHelper.attachToRecyclerView(recyclerView);*/
+            itemTouchHelper.attachToRecyclerView(recyclerView);
         }
 
         final View rootView = findViewById(android.R.id.content);

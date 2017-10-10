@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.wchristiansen.assignmenttracker.BaseApplication;
@@ -249,12 +250,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         SQLiteDatabase db = getWritableDatabase();
-        int result = db.delete(Table.ASSIGNMENTS, Column.ID + "=?", new String[] { assignment.getId() + "" });
+
+        List<Long> idsToDelete = new ArrayList<>();
+        idsToDelete.add(assignment.getId());
+
+        if(assignment.hasSubAssignments()) {
+            for(SubAssignment subAssignment : assignment.getSubAssignmentList()) {
+                idsToDelete.add(subAssignment.getId());
+            }
+        }
+
+        String args = TextUtils.join(", ", idsToDelete);
+        db.execSQL(String.format("DELETE FROM " + Table.ASSIGNMENTS + " WHERE " + Column.ID + " IN (%s);", args));
 
         if(parentAssignmentId == -1) {
-            Log.d(TAG, "----| delete (" + result + "): " + assignment.toString());
+            Log.d(TAG, "----| delete (" + idsToDelete.size() + "): " + assignment.toString());
         } else {
-            Log.d(TAG, "------| delete (" + result + "): " + assignment.toString());
+            Log.d(TAG, "------| delete (" + idsToDelete.size() + "): " + assignment.toString());
         }
 
         return true;

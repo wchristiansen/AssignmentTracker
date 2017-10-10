@@ -14,6 +14,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.wchristiansen.assignmenttracker.R;
+import com.wchristiansen.assignmenttracker.adapters.AssignmentViewHolder;
 
 /**
  * @author will
@@ -83,9 +84,8 @@ public class SwipeToDeleteHelper extends ItemTouchHelper.SimpleCallback {
             }
         }
         // Disable swiping on specific elements if the flag is set
-        if(viewHolder != null) {
-            Object tag = viewHolder.itemView.getTag();
-            if(tag != null && tag instanceof String && SWIPING_DISABLED.equals(tag)) {
+        if(viewHolder instanceof AssignmentViewHolder) {
+            if(!((AssignmentViewHolder) viewHolder).canSwipeToDismiss()) {
                 return 0;
             }
         }
