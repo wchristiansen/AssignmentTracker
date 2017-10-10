@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
+
     defaultConfig {
         applicationId "com.wchristiansen.assignmenttracker"
         minSdkVersion 21
@@ -11,10 +12,42 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
-        release {
+        debug {
+            debuggable true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    project.afterEvaluate {
+        // Copies the debug version of an apk into a directory added to version control
+        applicationVariants.all { variant ->
+            // Only copy debug build variants for now
+            if (variant.name in ["debug"]) {
+                def backupFolder = rootProject.file("archive")
+                def backName = String.format("%s_v%s_(%d).apk", rootProject.name, variant.versionName, variant.versionCode)
+                def backupFile = new File(backupFolder, backName)
+
+                variant.outputs.all { output ->
+                    Task copyApkTask = project.task("copy${variant.name.capitalize()}Apk", type: Copy) {
+                        from output.outputFile.getParent()
+                        into backupFolder
+                        include output.outputFileName
+                        rename(output.outputFileName, backupFile.getName())
+                    }
+
+                    // Run this task once the assemble task is finished
+                    variant.assemble.finalizedBy(copyApkTask)
+                }
+            }
         }
     }
 }
