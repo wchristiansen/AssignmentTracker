@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,7 +16,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +37,10 @@ import com.wchristiansen.assignmenttracker.R;
 import com.wchristiansen.assignmenttracker.adapters.AssignmentAdapter;
 import com.wchristiansen.assignmenttracker.adapters.HidingScrollListener;
 import com.wchristiansen.assignmenttracker.adapters.OptionsMenuItem;
+import com.wchristiansen.assignmenttracker.adapters.VerticalPaddingItemDecorator;
 import com.wchristiansen.assignmenttracker.fragments.AddNewItemFragment;
 import com.wchristiansen.assignmenttracker.fragments.ImportDatabaseFragment;
+import com.wchristiansen.assignmenttracker.models.AdapterItem;
 import com.wchristiansen.assignmenttracker.models.Assignment;
 import com.wchristiansen.assignmenttracker.models.Course;
 import com.wchristiansen.assignmenttracker.utils.SwipeToDeleteHelper;
@@ -113,15 +121,18 @@ public class MainActivity extends AppCompatActivity implements AddNewItemFragmen
                     showMenuViews();
                 }
             });
+            int bottomPadding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    getResources().getDimension(R.dimen.padding_normal),
+                    getResources().getDisplayMetrics());
+            recyclerView.addItemDecoration(new VerticalPaddingItemDecorator(0, bottomPadding));
             registerForContextMenu(recyclerView);
 
-            // TODO Should there be a swipe option for certain view types?
             SwipeToDeleteHelper swipeToDeleteHelper = new SwipeToDeleteHelper(this, 0,
                     ItemTouchHelper.LEFT, R.color.bg_delete_item, R.drawable.icv_delete_white_24dp,
                     new SwipeToDeleteHelper.Callback() {
                         @Override
                         public void onItemRemoved(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                            assignmentAdapter.removeAssignment(viewHolder.getAdapterPosition());
+                            removeAssignment(viewHolder.getAdapterPosition());
                         }
                     });
 
@@ -160,6 +171,53 @@ public class MainActivity extends AppCompatActivity implements AddNewItemFragmen
             return;
         }
         super.onBackPressed();
+    }
+
+    private void removeAssignment(final int position) {
+        AdapterItem item = assignmentAdapter.getItemAtPosition(position);
+        if(item instanceof Assignment) {
+            int totalRemoved = assignmentAdapter.visuallyRemoveAssignment(position);
+
+            final String title;
+            if (totalRemoved > 1) {
+                title = totalRemoved + " assignments";
+            } else {
+                title = "\"" + item.getTitle() + "\"";
+            }
+
+            final RecyclerView recyclerView = findViewById(R.id.recycler_view);
+            Snackbar.make(recyclerView, getSnackBarText(title + " deleted"), Snackbar.LENGTH_LONG)
+                .setActionTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        assignmentAdapter.restoreQueueToRemoveItems();
+                        Snackbar.make(
+                                recyclerView,
+                                getSnackBarText(title + " restored"),
+                                Snackbar.LENGTH_SHORT
+                        ).show();
+                    }
+                })
+                .addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        // Perform the actual removal if the Snackbar is dismissed any way
+                        // besides the Undo action being explicitly hit
+                        if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                            assignmentAdapter.confirmQueueToRemoveFromDatabase();
+                        }
+                    }
+                }).show();
+        }
+    }
+
+    private SpannableStringBuilder getSnackBarText(String text) {
+        int textColor = ContextCompat.getColor(this, android.R.color.white);
+        final ForegroundColorSpan whiteSpan = new ForegroundColorSpan(textColor);
+        SpannableStringBuilder snackbarText = new SpannableStringBuilder(text);
+        snackbarText.setSpan(whiteSpan, 0, snackbarText.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        return snackbarText;
     }
 
     //<editor-fold desc="Methods to handle Activity menu item creation and events">
@@ -218,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements AddNewItemFragmen
         if (OptionsMenuItem.EDIT.id == item.getItemId()) {
             assignmentAdapter.onAddSubAssignment(null, index, false);
         } else if (OptionsMenuItem.DELETE.id == item.getItemId()) {
-            assignmentAdapter.removeAssignment(index);
+            removeAssignment(index);
         } else if (OptionsMenuItem.MARK_COMPLETE.id == item.getItemId()) {
             assignmentAdapter.onViewChecked(null, index);
         }

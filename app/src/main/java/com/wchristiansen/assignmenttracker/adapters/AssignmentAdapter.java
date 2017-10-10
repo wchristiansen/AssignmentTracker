@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -43,13 +44,17 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentViewHolder
     private Context context;
     private DatabaseHelper databaseHelper;
     private List<AdapterItem> adapterModelList;
+    // TODO This should probably be handled more elegantly
+    private List<AdapterItem> queuedToRemoved;
 
+    private int queuedToRemoveIndex = -1;
     private int addAssignmentAtPosition = -1;
 
     public AssignmentAdapter(Context context, @NonNull List<Course> courseList) {
         this.context = context;
         this.databaseHelper = BaseApplication.getDatabaseHelper();
         this.adapterModelList = new ArrayList<>();
+        this.queuedToRemoved = new ArrayList<>();
 
         // Not super efficient but saves in the long term do to dealing with a flat list instead of
         // a list of Courses containing of list of Assignments containing a list of SubAssignments.
@@ -89,6 +94,13 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentViewHolder
         addItem(course);
     }
 
+    public @Nullable AdapterItem getItemAtPosition(int position) {
+        if(position >= 0 && adapterModelList.size() > position) {
+            return adapterModelList.get(position);
+        }
+        return null;
+    }
+
     public void addAssignment(Assignment assignment) {
         int index = -1;
         AdapterItem item;
@@ -117,32 +129,55 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentViewHolder
         }
     }
 
-    public void removeAssignment(int position) {
+    public int visuallyRemoveAssignment(int position) {
         AdapterItem item = adapterModelList.get(position);
+        queuedToRemoveIndex = position;
         if(item instanceof Assignment) {
             Assignment assignment = (Assignment)item;
-            boolean result = databaseHelper.removeAssignment(assignment);
-            if(result) {
-                List<Assignment> toRemove = new ArrayList<>();
-                toRemove.add(assignment);
+            queuedToRemoved.add(assignment);
 
-                if(assignment.getSubAssignmentList() != null) {
-                    toRemove.addAll(assignment.getSubAssignmentList());
-                }
+            if(assignment.getSubAssignmentList() != null) {
+                queuedToRemoved.addAll(assignment.getSubAssignmentList());
+            }
 
-                adapterModelList.removeAll(toRemove);
+            adapterModelList.removeAll(queuedToRemoved);
 
-                if(assignment.hasSubAssignments() && assignment.getSubAssignmentList().size() > 0) {
-                    // Notify the system of the number of items that were removed
-                    int totalRemoved = toRemove.size();
-                    notifyItemRangeRemoved(position, totalRemoved);
-                } else {
-                    notifyItemRemoved(position);
-                }
+            if(assignment.hasSubAssignments() && assignment.getSubAssignmentList().size() > 0) {
+                // Notify the system of the number of items that were removed
+                int totalRemoved = queuedToRemoved.size();
+                notifyItemRangeRemoved(position, totalRemoved);
             } else {
-                Toast.makeText(context, "Well shit.", Toast.LENGTH_SHORT).show();
+                notifyItemRemoved(position);
+            }
+            return queuedToRemoved.size();
+        }
+        return 0;
+    }
+
+    public void restoreQueueToRemoveItems() {
+        if(queuedToRemoved.size() > 0 && queuedToRemoveIndex != -1) {
+            int restoreQuantity = queuedToRemoved.size();
+
+            adapterModelList.addAll(queuedToRemoveIndex, queuedToRemoved);
+            notifyItemRangeInserted(queuedToRemoveIndex, restoreQuantity);
+
+            queuedToRemoved.clear();
+            queuedToRemoveIndex = -1;
+        }
+    }
+
+    public void confirmQueueToRemoveFromDatabase() {
+        if(queuedToRemoved.size() > 0) {
+            AdapterItem item = queuedToRemoved.get(0);
+            if(item instanceof Assignment) {
+                boolean result = databaseHelper.removeAssignment((Assignment)item);
+                if (!result) {
+                    Toast.makeText(context, "Well shit.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
+        queuedToRemoved.clear();
+        queuedToRemoveIndex = -1;
     }
 
     private void addItem(AdapterItem item) {
